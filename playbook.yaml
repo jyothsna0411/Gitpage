@@ -1,0 +1,54 @@
+---
+- name: demo
+  hosts: web
+  become: true
+  tasks:
+    - name: Ensure /var/www/html directory exists
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      run_once: true
+
+    - name: install git and nginx on Debian-based systems
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - nginx
+      when: ansible_os_family == 'Debian'
+
+    - name: install git and nginx on Red Hat-based systems
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - nginx
+      when: ansible_os_family == 'RedHat'
+
+    - name: Ensure /var/www/html is empty
+      ansible.builtin.file:
+        path: /var/www/html
+        state: absent
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+    - name: git clone in vm of ec2
+      ansible.builtin.git:
+        repo: https://github.com/jyothsna0411/Gitpage.git
+        dest: /var/www/html
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+    - name: restart nginx on Debian-based systems
+ansible.builtin.service:
+        name: nginx
+        state: restarted
+      when: ansible_os_family == 'Debian' or ansible_os_famil>
+
+    - name: restart nginx on Red Hat-based systems
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+      when: ansible_os_family == 'RedHat'
