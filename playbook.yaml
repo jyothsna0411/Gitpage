@@ -42,10 +42,10 @@
       when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
 
     - name: restart nginx on Debian-based systems
-ansible.builtin.service:
+      ansible.builtin.service:
         name: nginx
         state: restarted
-      when: ansible_os_family == 'Debian' or ansible_os_famil>
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
 
     - name: restart nginx on Red Hat-based systems
       ansible.builtin.service:
